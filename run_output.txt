@@ -1,0 +1,37 @@
+============================================================
+STEP 1  Learn demand from the survey (linear regression)
+============================================================
+Survey rows: 25, missing demand: 1, used: 24
+Learned model:  demand = 3.29 + 0.41 x cars
+Test error (MAE): 0.98 charging sessions per day
+Predicted demand for all 100 zones (only 24 were surveyed)
+
+============================================================
+STEP 2+3  Place 3 stations: run each algorithm 10 times
+============================================================
+algorithm               average   worst    best   found the best plan
+Hill climbing             354.6   291.7   394.4                4 / 10
+Simulated annealing       392.3   373.0   394.4                9 / 10
+Brute force (check)       394.4   <- the true best plan
+
+Simulated annealing plan: stations at [(2, 2), (2, 8), (7, 6)], covering 394.4 sessions/day
+    . . . . . . . . . .
+    . . # . . . . . # .
+    . # S # . . . # S #
+    . . # . . . . . # .
+    . . . . . . . . . .
+    . . . . . . . . . .
+    . . . . . . # . . .
+    . . . . . # S # . .
+    . . . . . . # . . .
+    . . . . . . . . . .
+
+============================================================
+STEP 4 (DAA)  How many stations cover 50% of demand?  Binary search
+============================================================
+  check 1: 11 stations cover 66.1%  ->  enough, try fewer
+  check 2:  6 stations cover 47.0%  ->  not enough, try more
+  check 3:  9 stations cover 60.3%  ->  enough, try fewer
+  check 4:  8 stations cover 56.9%  ->  enough, try fewer
+  check 5:  7 stations cover 50.5%  ->  enough, try fewer
+Answer: 7 stations, found with 5 checks (trying 1, 2, 3, ... one by one would need 7 checks; for 1..20 binary search never needs more than 5)
