@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EV Charge Planner - AI/ML & DAA Academic Project</title>
+<title>EV Charging Station Placement Planner</title>
 <style>
   :root {
-    --bg: #f5f7fb;
+    --bg: #f8fafc;
     --card: #ffffff;
-    --text: #1a202c;
+    --text: #0f172a;
     --muted: #64748b;
     --line: #e2e8f0;
     --station: #ea580c;
@@ -16,9 +16,6 @@
     --accent-light: #eff6ff;
     --success: #16a34a;
     --danger: #dc2626;
-    --warning: #d97706;
-    --tag-bg: #e0f2fe;
-    --tag-text: #0369a1;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -32,161 +29,125 @@
       --accent-light: #1e3a5f;
       --success: #22c55e;
       --danger: #ef4444;
-      --warning: #f59e0b;
-      --tag-bg: #1e3a8a;
-      --tag-text: #bfdbfe;
     }
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif; }
-  main { max-width: 1060px; margin: 0 auto; padding: 20px 16px; }
+  main { max-width: 1040px; margin: 0 auto; padding: 24px 16px; }
 
-  /* Header */
-  .header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
-  h1 { margin: 0 0 4px; font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-  .badge-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-  .badge { background: var(--tag-bg); color: var(--tag-text); font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; }
+  header { margin-bottom: 20px; }
+  h1 { margin: 0 0 6px; font-size: 24px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 13px; margin: 0; line-height: 1.6; }
 
-  /* Academic Banner */
-  .academic-banner { background: var(--accent-light); border: 1px solid var(--accent); border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; font-size: 13px; line-height: 1.6; }
-  .academic-banner b { color: var(--accent); }
-
-  /* Layout */
   .layout { display: grid; grid-template-columns: 420px 1fr; gap: 20px; align-items: start; }
   @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-  h2 { font-size: 15px; font-weight: 700; margin: 0 0 10px; display: flex; align-items: center; justify-content: space-between; }
-  .step-num { background: var(--accent); color: #fff; font-size: 11px; padding: 2px 7px; border-radius: 6px; margin-right: 6px; font-weight: 700; }
-  .sub { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
 
-  /* Grid Map */
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  h2 { font-size: 15px; font-weight: 600; margin: 0 0 10px; }
+
   .grid { display: grid; grid-template-columns: repeat(10, 38px); gap: 3px; justify-content: center; }
   @media (max-width: 480px) { .grid { grid-template-columns: repeat(10, 1fr); } }
-  .zone { aspect-ratio: 1; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; cursor: pointer; position: relative; border: 2px solid transparent; transition: transform 0.1s; user-select: none; }
-  .zone:hover { transform: scale(1.1); z-index: 2; border-color: #3b82f6; }
+  .zone { aspect-ratio: 1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; cursor: pointer; position: relative; border: 2px solid transparent; user-select: none; }
+  .zone:hover { border-color: #3b82f6; }
   .zone.covered { border-color: var(--station); }
-  .zone.station::after { content: "⚡"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--station); color: #fff; border-radius: 3px; font-size: 17px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-  .legend { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; margin-top: 10px; justify-content: center; }
-  .bar { width: 100px; height: 10px; border-radius: 3px; background: linear-gradient(90deg, #dbeafe, #1d4ed8); }
+  .zone.station::after { content: "⚡"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--station); color: #fff; border-radius: 3px; font-size: 16px; }
 
-  /* Controls & Buttons */
-  button { font: inherit; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer; margin: 0 4px 6px 0; font-size: 13px; font-weight: 600; transition: 0.15s; }
-  button:hover { border-color: var(--accent); color: var(--accent); }
+  .legend { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; margin-top: 10px; justify-content: center; }
+  .bar { width: 90px; height: 8px; border-radius: 2px; background: linear-gradient(90deg, #dbeafe, #1d4ed8); }
+
+  button { font: inherit; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); color: var(--text); cursor: pointer; margin: 0 4px 6px 0; font-size: 13px; font-weight: 500; }
+  button:hover { border-color: var(--accent); }
   button.main { background: var(--accent); border-color: var(--accent); color: #fff; }
-  button.main:hover { background: #1d4ed8; color: #fff; }
+  button.main:hover { background: #1d4ed8; }
   button.secondary { background: #f1f5f9; border-color: #cbd5e1; color: #334155; }
   button.secondary:hover { background: #e2e8f0; }
 
-  /* Score & Diagnostic */
-  .score-box { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-top: 10px; text-align: center; }
-  .score-val { font-size: 32px; font-weight: 800; color: var(--accent); }
+  .score-box { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin-top: 10px; text-align: center; }
+  .score-val { font-size: 30px; font-weight: 700; color: var(--accent); }
   .score-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
-  .diagnostic { margin-top: 8px; font-size: 12px; padding: 6px 10px; border-radius: 6px; display: inline-block; font-weight: 600; }
-  .diag-opt { background: #dcfce7; color: #15803d; }
-  .diag-local { background: #fee2e2; color: #b91c1c; }
+  .diag { margin-top: 8px; font-size: 12px; padding: 6px 10px; border-radius: 6px; display: inline-block; }
+  .diag-opt { background: #dcfce7; color: #15803d; font-weight: 500; }
+  .diag-local { background: #fee2e2; color: #b91c1c; font-weight: 500; }
   .diag-info { background: #f1f5f9; color: #475569; }
 
-  /* Equations & Tables */
-  .eq-box { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-family: "Consolas", monospace; font-size: 13px; margin: 6px 0 10px; }
-  .eq-box code { color: var(--accent); font-weight: bold; }
+  .eq-box { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; font-family: Consolas, monospace; font-size: 13px; margin: 6px 0 10px; }
+  .eq-box code { color: var(--accent); font-weight: 600; }
+
   table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 6px; }
-  td, th { text-align: left; padding: 6px 6px; border-bottom: 1px solid var(--line); }
+  td, th { text-align: left; padding: 6px 4px; border-bottom: 1px solid var(--line); }
   td.n, th.n { text-align: right; }
   tr:last-child td { border-bottom: none; }
-  .tag-green { color: var(--success); font-weight: bold; }
-  .tag-red { color: var(--danger); font-weight: bold; }
-
 </style>
 </head>
 <body>
 <main>
-  <!-- Header -->
-  <div class="header">
-    <div>
-      <h1>⚡ EV Charge Planner</h1>
-      <div class="badge-row">
-        <span class="badge">Module 1: AI State Space Search</span>
-        <span class="badge">Module 2: Heuristic Optimization</span>
-        <span class="badge">Module 3: Machine Learning (OLS)</span>
-        <span class="badge">DAA: Binary Search on Answer Space</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Academic Summary Banner -->
-  <div class="academic-banner">
-    <b>Objective:</b> Optimize placement of <b>3 EV charging stations</b> in a 10×10 city (100 zones).
-    Unmeasured zone demand is predicted via <b>Linear Regression</b>.
-    Optimal locations are solved using <b>Hill Climbing vs Simulated Annealing</b>.
-    Minimum station sizing is solved in <b>O(log N)</b> via <b>Binary Search</b>.
-  </div>
+  <header>
+    <h1>EV Charging Station Placement Planner</h1>
+    <p class="sub">Determining the optimal spatial placement of 3 charging stations in a 10×10 city grid using linear regression demand estimation, local search optimization, and binary search.</p>
+  </header>
 
   <div class="layout">
-    <!-- Left Column: Map -->
+    <!-- Left Column: City Map -->
     <div>
       <div class="card">
-        <h2><span>City Grid Map (10 × 10 Zones)</span></h2>
-        <p class="sub">Color intensity represents predicted charging demand. Click any zone to manually test placement.</p>
+        <h2>City Grid Map (100 Zones)</h2>
+        <p class="sub" style="margin-bottom:10px">Colors show predicted charging demand. Click any zone to manually place or move stations.</p>
         <div class="grid" id="grid"></div>
         <div class="legend">
           <span>Low</span> <div class="bar"></div> <span>High demand</span>
           <span style="margin-left:8px">⚡ Station</span>
-          <span style="color:var(--station);font-weight:bold;margin-left:8px">▢ Covered</span>
+          <span style="color:var(--station);font-weight:600;margin-left:8px">▢ Covered zone</span>
         </div>
       </div>
 
-      <!-- Live Execution Log -->
       <div class="card">
-        <h2>Comparison Log</h2>
+        <h2>Comparison History</h2>
         <table id="results">
           <thead>
-            <tr><th>Algorithm / Attempt</th><th class="n">Score</th><th class="n">% City</th></tr>
+            <tr><th>Plan</th><th class="n">Score</th><th class="n">Coverage</th></tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Right Column: Step by Step Modules -->
+    <!-- Right Column: Step by Step Execution -->
     <div>
-      <!-- Step 1: Machine Learning -->
+      <!-- Step 1: Demand Estimation -->
       <div class="card">
-        <h2><span><span class="step-num">Step 1</span>Module 3: Demand Prediction (Machine Learning)</span></h2>
-        <p class="sub">Trained Ordinary Least Squares (OLS) regression on 24 surveyed zones to extrapolate demand for all 100 zones.</p>
-        <div id="model">Loading model data…</div>
+        <h2>Step 1: Demand Estimation (Linear Regression)</h2>
+        <p class="sub">Trained Ordinary Least Squares (OLS) regression on 24 surveyed zones to predict demand across all 100 zones based on vehicle counts.</p>
+        <div id="model">Loading model...</div>
       </div>
 
-      <!-- Step 2: Optimization Search -->
+      <!-- Step 2: Station Optimization -->
       <div class="card">
-        <h2><span><span class="step-num">Step 2</span>Module 1 & 2: Station Placement (AI Search)</span></h2>
-        <p class="sub">Compare greedy local search with stochastic temperature-annealed optimization:</p>
-        <div>
-          <button class="main" onclick="run('anneal')">🔥 Simulated Annealing</button>
-          <button onclick="run('hill')">⛰ Hill Climbing</button>
-          <button class="secondary" onclick="run('best')">🎯 Brute Force Benchmark</button>
+        <h2>Step 2: Station Placement (3 Stations)</h2>
+        <p class="sub">Compare greedy steepest-ascent with simulated annealing:</p>
+        <div style="margin-top:8px">
+          <button class="main" onclick="run('anneal')">Simulated Annealing</button>
+          <button onclick="run('hill')">Hill Climbing</button>
+          <button class="secondary" onclick="run('best')">Brute Force Check</button>
           <button class="secondary" onclick="clearMap()">Reset</button>
         </div>
         
         <div class="score-box">
           <div class="score-val" id="score">0</div>
-          <div class="score-sub">Total Charging Sessions/Day Covered (<span id="pct">0%</span> of city)</div>
-          <div id="diag" class="diagnostic diag-info">Click an algorithm button above to solve.</div>
+          <div class="score-sub">Charging sessions/day covered (<span id="pct">0%</span> of city)</div>
+          <div id="diag" class="diag diag-info">Click an algorithm button above to find locations.</div>
         </div>
       </div>
 
-      <!-- Step 3: DAA Binary Search -->
+      <!-- Step 3: Binary Search on Station Count -->
       <div class="card">
-        <h2><span><span class="step-num">Step 3</span>DAA: Minimum Stations Required (Binary Search)</span></h2>
-        <p class="sub">
-          <b>Why Binary Search?</b> Coverage is monotonically non-decreasing (\(C(k+1) \ge C(k)\)).
-          Instead of 20 sequential runs (\(O(N)\)), binary search finds the exact minimum in at most <b>5 checks</b> (\(O(\log N)\)).
-        </p>
-        <div style="margin-bottom:10px">
-          <label style="font-weight:600">Target Coverage: <span id="targetTxt" style="color:var(--accent);font-size:16px">50%</span></label>
+        <h2>Step 3: Minimum Stations Needed (Binary Search)</h2>
+        <p class="sub">Because adding stations never decreases coverage, binary search finds the minimum number of stations needed in 5 checks instead of checking all 20 numbers one by one.</p>
+        <div style="margin:10px 0 8px">
+          <label style="font-weight:500">Target Coverage: <span id="targetTxt" style="color:var(--accent);font-weight:700">50%</span></label>
           <input type="range" id="target" min="15" max="90" step="5" value="50" style="width:100%;margin-top:6px"
                  oninput="document.getElementById('targetTxt').textContent = this.value + '%'">
         </div>
-        <button class="main" onclick="needed()">🔍 Binary Search Minimum Stations</button>
+        <button class="main" onclick="needed()">Find Minimum Stations</button>
         <div id="needed"></div>
       </div>
     </div>
@@ -195,12 +156,12 @@
 
 <script>
 const NAMES = {
-  hill: "⛰ Hill Climbing",
-  anneal: "🔥 Simulated Annealing",
-  best: "🎯 Brute Force Benchmark",
-  you: "👤 Your Placement"
+  hill: "Hill Climbing",
+  anneal: "Simulated Annealing",
+  best: "Brute Force (Exact Check)",
+  you: "Manual Placement"
 };
-let demand = [], K = 3, totalDemand = 1335.7, myStations = [];
+let demand = [], K = 3, totalDemand = 1338.4, myStations = [];
 
 function color(value, max) {
   const t = Math.min(1, Math.max(0, value / max));
@@ -221,7 +182,7 @@ function drawMap(plan) {
       const cls = "zone" + (covered.has(key) ? " covered" : "") + (stations.has(key) ? " station" : "");
       const isDark = (v / max) > 0.5;
       html += `<div class="${cls}" style="background:${color(v, max)};color:${isDark ? "#ffffff" : "#0f172a"}"
-               title="Zone (${r}, ${c}) | Demand: ${v} sessions/day" onclick="clickZone(${r}, ${c})">${Math.round(v)}</div>`;
+               title="Zone (${r}, ${c}): ${v} sessions/day" onclick="clickZone(${r}, ${c})">${Math.round(v)}</div>`;
     }
   }
   document.getElementById("grid").innerHTML = html;
@@ -237,25 +198,25 @@ function showPlan(name, plan) {
   const diag = document.getElementById("diag");
   if (name === "anneal") {
     if (sc >= 394.0) {
-      diag.className = "diagnostic diag-opt";
-      diag.textContent = "✅ Global Optimum Found! Stations distributed across 3 distinct demand hotspots.";
+      diag.className = "diag diag-opt";
+      diag.textContent = "Optimal plan found: 394.4 sessions/day covered across 3 locations.";
     } else {
-      diag.className = "diagnostic diag-info";
-      diag.textContent = `Near-optimal solution (${sc} / 394.4). Escaped major traps.`;
+      diag.className = "diag diag-info";
+      diag.textContent = `Near-optimal solution (${sc} / 394.4 sessions/day).`;
     }
   } else if (name === "hill") {
     if (sc < 390.0) {
-      diag.className = "diagnostic diag-local";
-      diag.textContent = `⚠️ Trapped in Local Maximum (${sc} < 394.4)! Greedy search couldn't escape station clumping.`;
+      diag.className = "diag diag-local";
+      diag.textContent = `Stuck in a local maximum (${sc} < 394.4). Two stations clustered in overlapping zones.`;
     } else {
-      diag.className = "diagnostic diag-opt";
-      diag.textContent = "Fortunate random start converged to global optimum.";
+      diag.className = "diag diag-opt";
+      diag.textContent = "Found optimal plan (converged from favorable initial state).";
     }
   } else if (name === "best") {
-    diag.className = "diagnostic diag-opt";
-    diag.textContent = "🎯 True Provable Global Maximum (Checked all 161,700 combinations).";
+    diag.className = "diag diag-opt";
+    diag.textContent = "Verified optimal plan by evaluating all 161,700 combinations.";
   } else {
-    diag.className = "diagnostic diag-info";
+    diag.className = "diag diag-info";
     diag.textContent = `Manual Placement: ${plan.stations.length} of ${K} stations placed.`;
   }
 
@@ -266,8 +227,8 @@ function showPlan(name, plan) {
 }
 
 async function run(algo) {
-  document.getElementById("diag").className = "diagnostic diag-info";
-  document.getElementById("diag").textContent = "Executing search optimization…";
+  document.getElementById("diag").className = "diag diag-info";
+  document.getElementById("diag").textContent = "Running optimization...";
   const plan = await (await fetch("/run?algo=" + algo)).json();
   myStations = [];
   showPlan(algo, plan);
@@ -286,26 +247,25 @@ async function clickZone(r, c) {
 async function needed() {
   const target = document.getElementById("target").value;
   const box = document.getElementById("needed");
-  box.innerHTML = `<p class="sub" style="margin-top:8px">Running binary search over answer space [1, 20]...</p>`;
+  box.innerHTML = `<p class="sub" style="margin-top:8px">Running binary search on station count [1, 20]...</p>`;
   const r = await (await fetch("/needed?target=" + target)).json();
   
   let rows = r.steps.map((s, i) => {
     const verdict = s.enough 
-      ? `<span class="tag-green">✅ Feasible (&ge;${target}%)</span> &rarr; Search Left`
-      : `<span class="tag-red">❌ Insufficient (&lt;${target}%)</span> &rarr; Search Right`;
+      ? `<span style="color:var(--success);font-weight:600">enough (&ge;${target}%)</span> &rarr; try fewer`
+      : `<span style="color:var(--danger);font-weight:600">not enough (&lt;${target}%)</span> &rarr; try more`;
     return `<tr><td>Check ${i + 1}</td><td class="n">k = ${s.stations}</td><td class="n">${s.share}%</td><td>${verdict}</td></tr>`;
   }).join("");
 
   box.innerHTML = `
     <table style="margin-top:10px">
-      <thead><tr><th>Iteration</th><th class="n">Stations (mid)</th><th class="n">Coverage</th><th>Decision</th></tr></thead>
+      <thead><tr><th>Iteration</th><th class="n">Stations (k)</th><th class="n">Coverage</th><th>Action</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
-    <div style="margin-top:10px;background:var(--bg);padding:10px;border-radius:8px;border:1px solid var(--line)">
+    <div style="margin-top:10px;background:var(--bg);padding:10px;border-radius:6px;border:1px solid var(--line);font-size:13px">
       ${r.answer === null
-        ? `<b style="color:var(--danger)">Target unattainable</b> even with ${r.max} stations.`
-        : `Optimal Minimum: <b style="font-size:16px;color:var(--accent)">${r.answer} stations</b> required to cover &ge;${target}%.
-           <br><small class="sub">Completed in <b>${r.steps.length} checks</b> (O(log N)) instead of 20 linear evaluations.</small>`}
+        ? `<b style="color:var(--danger)">Target not reached</b> even with ${r.max} stations.`
+        : `Result: <b>${r.answer} stations</b> needed to cover at least ${target}% of city demand.<br><span class="sub">Found in <b>${r.steps.length} checks</b> using binary search.</span>`}
     </div>`;
 }
 
@@ -314,23 +274,23 @@ function clearMap() {
   drawMap(null);
   document.getElementById("score").textContent = "0";
   document.getElementById("pct").textContent = "0%";
-  document.getElementById("diag").className = "diagnostic diag-info";
-  document.getElementById("diag").textContent = "Map reset. Select an algorithm or click zones.";
+  document.getElementById("diag").className = "diag diag-info";
+  document.getElementById("diag").textContent = "Map reset. Select an algorithm or click zones to place stations.";
 }
 
 async function init() {
   const m = await (await fetch("/model")).json();
   demand = m.demand;
   K = m.stations;
-  totalDemand = m.total_demand || 1335.7;
+  totalDemand = m.total_demand || 1338.4;
 
   document.getElementById("model").innerHTML = `
     <div class="eq-box">
-      Regression Formula: <code>demand = ${m.a} + ${m.b} &times; cars</code>
+      Fitted Model: <code>demand = ${m.a} + ${m.b} &times; cars</code>
     </div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px">
-      <div><b>Sample Size:</b> ${m.used} valid surveyed zones</div>
-      <div><b>Test Set MAE:</b> <span style="color:var(--success);font-weight:bold">${m.mae}</span> sessions/day</div>
+      <div><b>Surveyed zones:</b> ${m.used}</div>
+      <div><b>Test Error (MAE):</b> ${m.mae} sessions/day</div>
       <div><b>Total City Demand:</b> ${totalDemand} sessions/day</div>
     </div>`;
   drawMap(null);
