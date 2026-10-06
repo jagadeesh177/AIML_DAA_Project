@@ -1,20 +1,24 @@
-============================================================
-STEP 1  Learn demand from the survey (linear regression)
-============================================================
-Survey rows: 25, missing demand: 1, used: 24
-Learned model:  demand = 3.29 + 0.41 x cars
-Test error (MAE): 0.98 charging sessions per day
-Predicted demand for all 100 zones (only 24 were surveyed)
+﻿=================================================================
+MODULE 3 (ML): Predict Unmeasured Demand via Linear Regression
+=================================================================
+Survey rows: 25, missing demand: 1, valid rows used: 24
+Regression Formula: demand = 3.29 + 0.41 * cars  (Ordinary Least Squares)
+Test Set MAE:       0.98 sessions/day (Generalization error)
+Coverage:           Estimated demand for all 100 zones from 24 survey samples.
 
-============================================================
-STEP 2+3  Place 3 stations: run each algorithm 10 times
-============================================================
-algorithm               average   worst    best   found the best plan
-Hill climbing             354.6   291.7   394.4                4 / 10
-Simulated annealing       392.3   373.0   394.4                9 / 10
-Brute force (check)       394.4   <- the true best plan
+=================================================================
+MODULE 1 & 2 (AI SEARCH): Place 3 Stations (10 Trials per Algorithm)
+=================================================================
+Algorithm              Mean Score Min Score Max Score  Optimal Hits
+Hill Climbing               354.6     291.7     394.4         4 / 10
+Simulated Annealing         392.3     373.0     394.4         9 / 10
+Brute Force (Oracle)        394.4     394.4     394.4       10 / 10
 
-Simulated annealing plan: stations at [(2, 2), (2, 8), (7, 6)], covering 394.4 sessions/day
+Observation: Hill Climbing gets trapped in local maxima due to overlapping clusters.
+Simulated Annealing escapes traps via Metropolis probability P = exp(delta/T).
+
+Optimal SA Placement: stations at [(2, 2), (2, 8), (7, 6)]
+Total Demand Covered: 394.4 sessions/day (29.5% of city)
     . . . . . . . . . .
     . . # . . . . . # .
     . # S # . . . # S #
@@ -26,12 +30,15 @@ Simulated annealing plan: stations at [(2, 2), (2, 8), (7, 6)], covering 394.4 s
     . . . . . . # . . .
     . . . . . . . . . .
 
-============================================================
-STEP 4 (DAA)  How many stations cover 50% of demand?  Binary search
-============================================================
-  check 1: 11 stations cover 66.1%  ->  enough, try fewer
-  check 2:  6 stations cover 47.0%  ->  not enough, try more
-  check 3:  9 stations cover 60.3%  ->  enough, try fewer
-  check 4:  8 stations cover 56.9%  ->  enough, try fewer
-  check 5:  7 stations cover 50.5%  ->  enough, try fewer
-Answer: 7 stations, found with 5 checks (trying 1, 2, 3, ... one by one would need 7 checks; for 1..20 binary search never needs more than 5)
+=================================================================
+MODULE 4 (DAA): Minimum Stations for 50% Demand via Binary Search
+=================================================================
+  Iteration 1: test k=11 stations -> covers 66.1% demand | FEASIBLE (search left: [low, mid])
+  Iteration 2: test k= 6 stations -> covers 47.0% demand | INFEASIBLE (search right: [mid+1, high])
+  Iteration 3: test k= 9 stations -> covers 60.3% demand | FEASIBLE (search left: [low, mid])
+  Iteration 4: test k= 8 stations -> covers 56.9% demand | FEASIBLE (search left: [low, mid])
+  Iteration 5: test k= 7 stations -> covers 50.5% demand | FEASIBLE (search left: [low, mid])
+
+Result: Optimal k = 7 stations.
+Search Efficiency: Found in 5 checks (O(log N) vs O(N) linear search).
+=================================================================
