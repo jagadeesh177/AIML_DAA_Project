@@ -1,7 +1,7 @@
 # EV Charging Station Placement Planner
 
 **Author:** Jagadeesh  
-**Repository:** [github.com/jagadeesh177/ev-charge-planner](https://github.com/jagadeesh177/ev-charge-planner)
+**Repository:** [github.com/jagadeesh177/AIML_DAA_Project](https://github.com/jagadeesh177/AIML_DAA_Project)
 
 A computational tool to determine the optimal spatial placement of electric-vehicle (EV) charging stations across a city grid. The project combines supervised regression to estimate unmeasured charging demand, local search optimization to select station locations under budget constraints, and binary search to size the minimum number of stations needed to hit target coverage.
 
