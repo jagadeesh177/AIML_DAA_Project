@@ -91,4 +91,3 @@ Runs the full pipeline in the terminal and outputs the regression model, algorit
 | `city.csv` | Vehicle count data for each of the 100 city zones. |
 | `survey.csv` | Survey sample data with vehicle counts and measured daily demand. |
 | `run_output.txt` | Sample terminal execution log from `main.py`. |
-| `PROJECT_REPORT.md` | Detailed project report and methodology documentation. |
