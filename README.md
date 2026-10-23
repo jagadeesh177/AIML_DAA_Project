@@ -1,8 +1,8 @@
 # EV Charging Station Placement Planner
 
-**Author:** Jagadeesh  
-**Repository:** [github.com/jagadeesh177/AIML_DAA_Project](https://github.com/jagadeesh177/AIML_DAA_Project)  
-**Live Demo:** [https://ev-charge-planner-three.vercel.app](https://ev-charge-planner-three.vercel.app)
+- **Author:** Jagadeesh  
+- **GitHub Repository:** [https://github.com/jagadeesh177/AIML_DAA_Project](https://github.com/jagadeesh177/AIML_DAA_Project)  
+- **Live Deployed App (Vercel):** [https://ev-charge-planner-three.vercel.app](https://ev-charge-planner-three.vercel.app)  
 
 A computational tool to determine the optimal spatial placement of electric-vehicle (EV) charging stations across a city grid. The project combines supervised regression to estimate unmeasured charging demand, local search optimization to select station locations under budget constraints, and binary search to size the minimum number of stations needed to hit target coverage.
 
@@ -64,17 +64,17 @@ The global optimum score is **394.4 charging sessions/day** (covering 29.5% of t
 
 ## How to Run
 
-### Requirements
-- Python 3.8 or higher.
-- Built-in libraries only (`csv`, `math`, `random`, `itertools`, `http.server`). No pip packages required.
+### 1. Live Deployed Web Application
+You can use the application directly without installing anything:  
+👉 **[https://ev-charge-planner-three.vercel.app](https://ev-charge-planner-three.vercel.app)**
 
-### 1. Interactive Web Dashboard
+### 2. Local Web Dashboard
 ```bash
 python app.py
 ```
 Open **http://localhost:8000** in your browser to interact with the city map, run optimization algorithms, and test manual station placements.
 
-### 2. Terminal Mode
+### 3. Terminal Mode
 ```bash
 python main.py
 ```
@@ -92,3 +92,6 @@ Runs the full pipeline in the terminal and outputs the regression model, algorit
 | `city.csv` | Vehicle count data for each of the 100 city zones. |
 | `survey.csv` | Survey sample data with vehicle counts and measured daily demand. |
 | `run_output.txt` | Sample terminal execution log from `main.py`. |
+| `1_AIML_Report_Easala_Jagadeesh.pdf` | Project report documentation. |
+| `vercel.json` | Vercel production deployment and rewrite configuration. |
+| `api/index.py` | Vercel serverless function entrypoint. |
