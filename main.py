@@ -12,8 +12,11 @@ Run:
 """
 import csv
 import math
+import os
 import random
 from itertools import combinations
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # City grid dimensions and default constraints
 SIZE = 10          # 10x10 grid (100 zones total)
@@ -25,7 +28,18 @@ STATIONS = 3       # Default number of stations to place
 # ---------------------------------------------------------------------------
 def load_csv(name):
     """Load rows from a CSV file into a list of dictionaries."""
-    with open(name, newline="") as f:
+    filepath = name
+    if not os.path.isabs(filepath):
+        candidates = [
+            filepath,
+            os.path.join(BASE_DIR, name),
+            os.path.join(os.path.dirname(BASE_DIR), name),
+        ]
+        for c in candidates:
+            if os.path.exists(c):
+                filepath = c
+                break
+    with open(filepath, newline="") as f:
         return list(csv.DictReader(f))
 
 

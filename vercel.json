@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "city.csv,survey.csv,main.py,app.py,index.html"
+    }
+  },
+  "rewrites": [
+    { "source": "/model", "destination": "/api/index.py" },
+    { "source": "/run", "destination": "/api/index.py" },
+    { "source": "/needed", "destination": "/api/index.py" },
+    { "source": "/score", "destination": "/api/index.py" },
+    { "source": "/api/(.*)", "destination": "/api/index.py" }
+  ]
+}

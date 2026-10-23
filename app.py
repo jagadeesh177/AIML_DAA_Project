@@ -9,8 +9,8 @@ import os
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import parse_qs, urlparse
 
-# Ensure directory is project root
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(BASE_DIR)
 import main  # noqa: E402
 
 # Train regression model on startup
@@ -43,12 +43,25 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         url = urlparse(self.path)
         query = parse_qs(url.query)
+        path = url.path
+        if path.startswith("/api"):
+            path = path[4:] or "/"
 
-        if url.path == "/":
-            with open("index.html", "rb") as f:
+        if path == "/":
+            candidates = [
+                os.path.join(BASE_DIR, "index.html"),
+                os.path.join(os.path.dirname(BASE_DIR), "index.html"),
+                "index.html",
+            ]
+            html_path = "index.html"
+            for c in candidates:
+                if os.path.exists(c):
+                    html_path = c
+                    break
+            with open(html_path, "rb") as f:
                 self.send(f.read(), "text/html; charset=utf-8")
 
-        elif url.path == "/model":
+        elif path == "/model":
             grid = [[round(DEMAND[(r, c)], 1) for c in range(main.SIZE)] for r in range(main.SIZE)]
             self.send({
                 "a": round(A, 2),
@@ -60,7 +73,7 @@ class Handler(BaseHTTPRequestHandler):
                 "stations": main.STATIONS
             })
 
-        elif url.path == "/run":
+        elif path == "/run":
             algo = query.get("algo", ["anneal"])[0]
             if algo == "hill":
                 stations = main.hill_climbing(DEMAND)
@@ -70,7 +83,7 @@ class Handler(BaseHTTPRequestHandler):
                 stations = main.brute_force(DEMAND)
             self.send(plan_info(stations))
 
-        elif url.path == "/needed":
+        elif path == "/needed":
             try:
                 target = int(query.get("target", ["50"])[0])
                 if not 1 <= target <= 99:
@@ -93,7 +106,7 @@ class Handler(BaseHTTPRequestHandler):
                 ]
             })
 
-        elif url.path == "/score":
+        elif path == "/score":
             text = query.get("stations", [""])[0]
             try:
                 stations = tuple(tuple(int(v) for v in p.split(",")) for p in text.split(";") if p)
