@@ -6,10 +6,10 @@
     }
   },
   "rewrites": [
-    { "source": "/model", "destination": "/api/index.py" },
-    { "source": "/run", "destination": "/api/index.py" },
-    { "source": "/needed", "destination": "/api/index.py" },
-    { "source": "/score", "destination": "/api/index.py" },
+    { "source": "/model", "destination": "/api/index.py?endpoint=model" },
+    { "source": "/run", "destination": "/api/index.py?endpoint=run" },
+    { "source": "/needed", "destination": "/api/index.py?endpoint=needed" },
+    { "source": "/score", "destination": "/api/index.py?endpoint=score" },
     { "source": "/api/(.*)", "destination": "/api/index.py" }
   ]
 }

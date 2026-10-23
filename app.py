@@ -44,7 +44,12 @@ class Handler(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         query = parse_qs(url.query)
         path = url.path
-        if path.startswith("/api"):
+
+        if "endpoint" in query:
+            path = "/" + query["endpoint"][0]
+        elif self.headers.get("x-matched-path"):
+            path = urlparse(self.headers["x-matched-path"]).path
+        elif path.startswith("/api"):
             path = path[4:] or "/"
 
         if path == "/":
