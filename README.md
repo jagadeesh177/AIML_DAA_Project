@@ -80,6 +80,18 @@ python main.py
 ```
 Runs the full pipeline in the terminal and outputs the regression model, algorithm comparison table, and binary search traces.
 
+### 4. DAA Analyser (binary search with your own input)
+```bash
+python daa.py --target 50
+python daa.py --values "12,22,30,36,41,47,52,57,61,64" --target 50
+```
+The first finds the fewest stations that cover 50% of the city's demand; the second searches your own sorted list. Both print every step (low, high, mid, decision), the answer, and the number of checks compared with a linear search.
+
+### 5. Tests
+```bash
+python -m unittest discover tests
+```
+
 ---
 
 ## Repository Structure
@@ -92,7 +104,8 @@ Runs the full pipeline in the terminal and outputs the regression model, algorit
 | `city.csv` | Vehicle count data for each of the 100 city zones. |
 | `survey.csv` | Survey sample data with vehicle counts and measured daily demand. |
 | `run_output.txt` | Sample terminal execution log from `main.py`. |
-| `Easala_Jagadeesh_AIML_Report.pdf` | AIML project report documentation. |
-| `Easala_Jagadeesh_DAA_Report.pdf` | DAA project report documentation. |
+| `Easala_Jagadeesh_DAA_Report.pdf` | DAA project report (problem, algorithm, complexity, results, test cases). |
+| `daa.py` | DAA analyser: binary search on the answer with your own input, step by step, compared with linear search. |
+| `tests/test_binary_search.py` | 10 unit tests for the binary search. |
 | `vercel.json` | Vercel production deployment and rewrite configuration. |
 | `api/index.py` | Vercel serverless function entrypoint. |

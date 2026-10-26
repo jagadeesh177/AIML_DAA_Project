@@ -172,24 +172,41 @@ def best_coverage(demand, k):
     return max(score(simulated_annealing(demand, steps=4000, k=k), demand) for _ in range(2))
 
 
+def binary_search_min(check, low, high):
+    """
+    Binary search on the answer: the smallest k in [low, high] for which check(k) says "enough".
+    check(k) returns (value, enough), and enough must be monotonic:
+    false, false, ..., false, true, true, ... as k grows.
+    Returns (answer, steps): answer is None if even k = high is not enough, and
+    each step is (low, high, mid, value, enough) at the moment mid was checked.
+    """
+    top = high
+    high = top + 1                 # top + 1 stands for "not possible"
+    steps = []
+    while low < high:
+        mid = (low + high) // 2
+        value, enough = check(mid)
+        steps.append((low, high - 1, mid, value, enough))
+        if enough:
+            high = mid             # mid is enough: the answer is mid or smaller
+        else:
+            low = mid + 1          # mid is not enough: the answer is larger
+    return (low if low <= top else None), steps
+
+
 def min_stations_needed(demand, target_share):
     """
     Binary searches the range [1, MAX_STATIONS] for the minimum station count.
     Returns (answer, step_history).
     """
     goal = target_share * sum(demand.values())
-    low, high = 1, MAX_STATIONS + 1
-    steps = []
-    while low < high:
-        mid = (low + high) // 2
-        covered = best_coverage(demand, mid)
-        enough = covered >= goal
-        steps.append((mid, covered, enough))
-        if enough:
-            high = mid
-        else:
-            low = mid + 1
-    return (low if low <= MAX_STATIONS else None), steps
+
+    def check(k):
+        covered = best_coverage(demand, k)
+        return covered, covered >= goal
+
+    answer, steps = binary_search_min(check, 1, MAX_STATIONS)
+    return answer, [(mid, covered, enough) for _, _, mid, covered, enough in steps]
 
 
 # ---------------------------------------------------------------------------
