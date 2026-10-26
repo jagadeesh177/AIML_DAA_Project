@@ -1,0 +1,41 @@
+﻿============================================================
+Part 1: Predicting Demand from Survey Data (Linear Regression)
+============================================================
+Survey rows: 25, missing: 1, valid rows used: 24
+Regression model:   demand = 3.29 + 0.41 * cars
+Test error (MAE):   0.98 sessions/day
+Total city demand:  1338.4 sessions/day across 100 zones
+
+============================================================
+Part 2: Placing 3 Stations (Algorithm Comparison - 10 Runs Each)
+============================================================
+Algorithm                 Mean     Min     Max    Optimal Hits
+Hill Climbing            354.6   291.7   394.4          4 / 10
+Simulated Annealing      392.3   373.0   394.4          9 / 10
+Brute Force (Exact)      394.4   394.4   394.4         10 / 10
+
+Optimal locations: [(2, 2), (2, 8), (7, 6)]
+Total demand covered: 394.4 sessions/day (29.5%)
+    . . . . . . . . . .
+    . . # . . . . . # .
+    . # S # . . . # S #
+    . . # . . . . . # .
+    . . . . . . . . . .
+    . . . . . . . . . .
+    . . . . . . # . . .
+    . . . . . # S # . .
+    . . . . . . # . . .
+    . . . . . . . . . .
+
+============================================================
+Part 3: Minimum Stations for 50% Coverage (Binary Search)
+============================================================
+  Check 1: 11 stations -> covers 66.1% demand | enough -> try fewer
+  Check 2:  6 stations -> covers 47.0% demand | not enough -> try more
+  Check 3:  9 stations -> covers 60.3% demand | enough -> try fewer
+  Check 4:  8 stations -> covers 56.9% demand | enough -> try fewer
+  Check 5:  7 stations -> covers 50.5% demand | enough -> try fewer
+
+Result: 7 stations needed for 50% coverage.
+Found in 5 checks using binary search (linear search would take up to 20 checks).
+============================================================
